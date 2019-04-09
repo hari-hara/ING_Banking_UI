@@ -1,0 +1,6 @@
+{
+  "name": "smallbanking",
+  "short_name": "smallbanking",
+  "start_url": "/",
+  "display": "standalone"
+}
