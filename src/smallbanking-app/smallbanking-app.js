@@ -2,6 +2,12 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/app-route/app-location.js';
 import '@polymer/app-route/app-route.js';
 import '@polymer/iron-pages/iron-pages.js';
+import '@polymer/iron-ajax/iron-ajax.js';
+import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
+import '@polymer/paper-item/paper-item.js';
+import '@polymer/paper-listbox/paper-listbox.js';
+import '@polymer/paper-toast/paper-toast.js';
+import '@vaadin/vaadin-accordion/vaadin-accordion.js';
 
 import { sharedStyles } from './shared-styles.js';
 
@@ -10,58 +16,6 @@ import { sharedStyles } from './shared-styles.js';
  * @polymer
  */
 class SmallbankingApp extends PolymerElement {
-  static get template() {
-    return html`
-      ${sharedStyles}
-      <style>
-        :host {
-          display: block;
-        }
-      </style>
-      <div class="container">
-        <h2>Hello [[prop1]]!</h2>
-        <app-location route="{{route}}" use-hash-as-path></app-location>
-        <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}">
-        </app-route>
-        <app-route
-            route="{{subroute}}"
-            pattern="/:id"
-            data="{{subrouteData}}">
-        </app-route>
-        <div class="container-fluid" style="background-color: #ff6200 !important;">
-          <nav class="navbar navbar-expand-lg navbar-light bg-light container" style="background-color: #ff6200 !important;">
-            <a class="navbar-brand" href="#"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
-              <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
-              <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
-              <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
-            </ul>
-            </div>
-          </nav> 
-        </div>
-        <div class="container">
-            <div class="d-flex justify-content-center">
-              <paper-spinner active={{isActive}}></paper-spinner>
-            </div> 
-          <iron-pages selected=[[page]] attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-            <login-page name="login"></login-page>
-            <create-account name="create-account"></create-account>
-            <view-account name="view-account"></view-account>
-            <make-transaction name="make-transaction"></make-transaction>
-          </iron-pages>
-        </div>
-      </div>
-    `;
-  }
   static get properties() {
     return {
       prop1: {
@@ -71,8 +25,21 @@ class SmallbankingApp extends PolymerElement {
       page:{
         type: String,
         observer: '_pageChanged'
+      },
+      isLoggedin: {
+        type: Boolean,
+        value: false,
+        observer: '_checkUser'
       }
     };
+  }
+  _checkUser(){
+    if(sessionStorage.length == 0)
+    { 
+      return false
+    }else{
+      return true
+    }
   }
   static get observers(){
     
@@ -104,6 +71,90 @@ class SmallbankingApp extends PolymerElement {
       default:
         this.page =  'login';   
     }
+  }
+  /*
+  connectedCallback(){
+		super.connectedCallback();
+      sessionStorage.getItem("userData");
+      if(sessionStorage.length > 0){
+          this.isLoggedin = true;
+          if(sessionStorage.userRole == "Admin"){
+            this.isLoggedinAdmin = true;
+          }else{
+            this.isLoggedinUser = true;
+          }
+          
+      }else{
+        this.isLoggedin = false;
+      } 
+      this.addEventListener('loggedInuser', (e) => {
+          console.log(e.detail);
+          this.isLoggedin = true;
+      });
+  }
+  */
+  clearSession(){
+    sessionStorage.clear();
+    if(sessionStorage.length == 0){
+      this.isLoggedin = false;
+      document.querySelector('smallbanking-app').setAttribute('route.path', '/login');
+    }
+  }
+  static get template() {
+    return html`
+      ${sharedStyles}
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <div class="container">
+        <h2>Hello [[prop1]]!</h2>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}">
+        </app-route>
+        <app-route
+            route="{{subroute}}"
+            pattern="/:id"
+            data="{{subrouteData}}">
+        </app-route>
+        <div class="container-fluid" style="background-color: #ff6200 !important;">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light container" style="background-color: #ff6200 !important;">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+             
+                <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
+                <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
+                <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
+                <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
+                <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
+             
+            </ul>
+            </div>
+          </nav> 
+        </div>
+        <div class="container">
+            <div class="d-flex justify-content-center">
+              <paper-spinner active={{isActive}}></paper-spinner>
+            </div> 
+          <iron-pages selected=[[page]] attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+            <login-page name="login"></login-page>
+            <create-account name="create-account"></create-account>
+            <view-account name="view-account"></view-account>
+            <make-transaction name="make-transaction"></make-transaction>
+          </iron-pages>
+        </div>
+      </div>
+    `;
   }
 }
 
