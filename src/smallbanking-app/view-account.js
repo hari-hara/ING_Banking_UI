@@ -1,12 +1,5 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
-import '@polymer/iron-form/iron-form.js';
-import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
-import '@polymer/paper-item/paper-item.js';
-import '@polymer/paper-listbox/paper-listbox.js';
-import '@polymer/paper-toast/paper-toast.js';
-import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-card/paper-card.js';
 import { sharedStyles } from './shared-styles.js';
 
 class StockSummary extends PolymerElement{
@@ -68,20 +61,7 @@ class StockSummary extends PolymerElement{
         return html `
             <h2>[[pageTitle]]</h2>
 			<paper-toast id="messageHandle" text="[[toastMessage]]" horizontal-align="center" vertical-align="middle"></paper-toast>
-            <iron-form id="getSummary" class="col-md-4 offset-md-4 border border-secondary pt-3 pb-3">
-                <form>
-                    <paper-dropdown-menu label="Users" name="selectUser">
-                        <paper-listbox slot="dropdown-content" selected="{{selectedUser}}" attr-for-selected="name" selected-attribute="visible">
-                            <template is="dom-repeat" items="[[users]]">
-                                <paper-item name={{item}}>{{item}}</paper-item>
-                            </template>
-                        </paper-listbox>
-                    </paper-dropdown-menu>
-                    
-                    <paper-button label="Submit" required raised on-click="getSummary">Submit</paper-input>
-                   
-                </form>
-            </iron-form>
+            
             <paper-spinner active={{isActive}}></paper-spinner><br/>
             <iron-ajax
                 id="ajax"
@@ -90,33 +70,34 @@ class StockSummary extends PolymerElement{
                 on-error="handleError"
                 debounce-duration="300">
             </iron-ajax>
-            <table class="table mt-5">
-                <thead>
-                    <tr>
-                        <th>Transaction ID</th>
-                        <th>Username</th>
-                        <th>Stock Name Amount</th>
-                        <th>Quantity</th>
-                        <th>Type</th>
-                    </tr>
-                </thead>
-                {{filteredResults}}
-                    
-                        <tbody id="scrollable-element" style="overflow: auto;height: 200px;">
-                        
-                                <template is="dom-repeat" items=[[responseData]]  as="historyResults">
-                                    <tr>
-                                        <td scope="row">{{item.id}}</td>
-                                        <td>{{historyResults.userName}}</td>
-                                        <td>{{historyResults.stockName}}</td>
-                                        <td>{{historyResults.qty}}</td>
-                                        <td>{{historyResults.type}}</td>
-                                    </tr>
-                                </template>
-                        
-                        </tbody>
-                    
-            </table><br/>
+            <paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+                <div class="card-content">
+                    Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+                    <table class="table mt-5">
+                        <thead>
+                            <tr>
+                                <th>UserName</th>
+                                <th>Account No</th>
+                                <th>Total balance</th>
+                            </tr>
+                        </thead>
+                                <tbody>
+                                        <template is="dom-repeat" items=[[responseData]]  as="userResults">
+                                            <tr>
+                                                <td scope="row">{{userResults.userName}}</td>
+                                                <td>{{userResults.accountId}}</td>
+                                                <td>{{userResults.balance}}</td>
+                                            </tr>
+                                        </template>            
+                                </tbody>
+                    </table><br/>
+                </div>
+                <div class="card-actions">
+                <paper-button label="Get Statement" required raised on-click="getStatement">Get Statement</paper-input>
+                </div>
+            </paper-card>
+
+            
             
         `
     }

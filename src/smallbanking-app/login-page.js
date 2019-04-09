@@ -1,7 +1,5 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-form/iron-form.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-button/paper-button.js';
+
 import { sharedStyles } from './shared-styles.js';
 class LoginPage extends PolymerElement{
     constructor(){

@@ -3,6 +3,9 @@ import '@polymer/app-route/app-location.js';
 import '@polymer/app-route/app-route.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/iron-ajax/iron-ajax.js';
+import '@polymer/iron-form/iron-form.js';
+import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
 import '@polymer/paper-item/paper-item.js';
 import '@polymer/paper-listbox/paper-listbox.js';
@@ -48,6 +51,7 @@ class SmallbankingApp extends PolymerElement {
   }
   _routeChanged(page){
     this.page = (page || ('login'))
+    //this.page = page || this.isLoggedin ? 'admin' : 'login'; 
   }
   _pageChanged(newPage, oldPage){
     this.isActive = true;
@@ -72,7 +76,7 @@ class SmallbankingApp extends PolymerElement {
         this.page =  'login';   
     }
   }
-  /*
+  
   connectedCallback(){
 		super.connectedCallback();
       sessionStorage.getItem("userData");
@@ -92,7 +96,7 @@ class SmallbankingApp extends PolymerElement {
           this.isLoggedin = true;
       });
   }
-  */
+  
   clearSession(){
     sessionStorage.clear();
     if(sessionStorage.length == 0){
@@ -130,14 +134,27 @@ class SmallbankingApp extends PolymerElement {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-             
+              <template is="dom-if" if=[[!isLoggedin]]>
+                <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
+              </template>
+              <template is="dom-if" if=[[isLoggedinAdmin]]>
+                <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
+                <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
+              </template>
+              <template is="dom-if" if=[[isLoggedinUser]]>
+                <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
+                <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
+                <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
+              </template>
+
+              <!--
                 <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
                 <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
                 <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
                 <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
-             
+              -->
             </ul>
             </div>
           </nav> 
