@@ -45,6 +45,8 @@ class LoginPage extends PolymerElement{
                 document.querySelector("smallbanking-app").set('route.path', '/view-account');
             }
             
+                
+            
         }
     }
     static get properties(){
@@ -91,6 +93,7 @@ class LoginPage extends PolymerElement{
                 content-type="application/json">
             </iron-ajax>
             <paper-spinner active={{isActive}}></paper-spinner><br/>
+            <paper-toast id="messageHandle" text="[[toastMessage]]" horizontal-align="center" vertical-align="middle"></paper-toast>
         `
     }
 

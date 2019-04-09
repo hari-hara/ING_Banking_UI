@@ -12,7 +12,7 @@ class ViewAccount extends PolymerElement{
         super.ready();
         let viewAccountAjax = this.$.ajax;
         viewAccountAjax.contentType = "application/json";
-        viewAccountAjax.url = "http://10.117.189.40:8085/bank/user/"+sessionValue[0]+"/summary";
+        viewAccountAjax.url = config.baseURL+"/bank/user/"+sessionValue[0]+"/summary";
          this.requestType = 'summary';
          viewAccountAjax.generateRequest();
 
