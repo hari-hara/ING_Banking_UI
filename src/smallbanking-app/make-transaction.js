@@ -1,49 +1,98 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-ajax/iron-ajax.js';
-import '@polymer/iron-form/iron-form.js';
-import '@polymer/paper-button/paper-button.js';
-import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
-import '@polymer/paper-item/paper-item.js';
-import '@polymer/paper-listbox/paper-listbox.js';
-import '@polymer/paper-toast/paper-toast.js';
-import '@polymer/paper-input/paper-input.js';
 import { sharedStyles } from './shared-styles.js';
-
-class TradeAnalytics extends PolymerElement{
+class makeTransactions extends PolymerElement{
     constructor(){
         super();
     }
     ready(){
-        
         super.ready();
-
-        let paymentReportajax = this.$.ajax;
-        paymentReportajax.method = "GET";
-        paymentReportajax.contentType = "application/json";
-        paymentReportajax.url = config.baseURL+"/rmisecurity/tradeAnalytics";
-        paymentReportajax.generateRequest(); 
-        
+        sessionStorage.getItem("userData");
+        let sessionValue = JSON.parse(sessionStorage.getItem("userData"));
+        super.ready();
+        let viewAccountAjax = this.$.ajax;
+        viewAccountAjax.method= "POST";
+        viewAccountAjax.contentType = "application/json";
+        viewAccountAjax.url = "http://10.117.189.199:8085/bank/transaction "
+        // config.baseURL+"/bank/user/"+sessionValue[0]+"/summary";
+        viewAccountAjax.body = {
+            "accountno": "14",
+            "toAccount": "15",
+            "credit": "3000"
+          };
+         this.requestType = 'statement';
+         viewAccountAjax.generateRequest();
+        // this.$.transactionForm.addEventListener('iron-form-submit', function(event){
+        //     console.log(event.detail);
+        // }.bind(this));
     }
-    handleResponse(event){
-        this.data = event.detail.response;
-        
+    _makePaymetProcess(event){
+        console.log(event.details);
     }
     static get properties(){
-        return {
+        return{
             pageTitle:{
                 type: String,
-                value: "This is Product Analytics page"
+                value: "This page is to create transaction"
+            },
+            spendCategory:{
+                type: Array,
+                value: ["Medical","Travel","Loans","Utility Bills","Education","Shopping","Misc"]
+            },
+            paymentType:{
+                type: Array,
+                value: ["make","receive"]
+            },
+            selectedCategory:{
+                type: String,
+                value: ''
+            },
+            selectedType:{
+                type: String,
+                value: ''
             }
+            
         }
+    }
+    handleResponse(event){
+        this.$.messageHandle.toggle()
+        this.toastMessage = "Transaction Successful";
+    }
+    __getSpendCategory(){
+        var spendCategories = [
+            {"categoryName": "Medical"},
+            {"categoryName": "Travel"},
+            {"categoryName": "Loans"},
+            {"categoryName": "Utility Bills"},
+            {"categoryName": "Education"},
+            {"categoryName": "Shopping"},
+            {"categoryName": "Misc"}
+        ]
+        return spendCategories;
     }
     handleError(event){
         this.$.messageHandle.toggle();
-        //this.toastMessage = "Failed to make transaction";
+        this.toastMessage = "Failed to make transaction";
+    }
+    __getPaymentType(){
+        var spendCategories = [
+            {"selectedType": "make"},
+            {"selectedType": "receive"}
+        ]
+        return spendCategories;
     }
     static get template(){
         return html `
-            <h2>[[pageTitle]]</h2>
-            <svg id="svgImage" width="980" height="500"></svg><paper-spinner active={{isActive}}></paper-spinner><br/>
+        ${sharedStyles}
+            <h2 class="my-3">This page is to create transaction</h2>
+            <paper-toast id="messageHandle" text="[[toastMessage]]" horizontal-align="center" vertical-align="middle"></paper-toast>
+            <iron-form id="transactionForm" class="col-md-4 offset-md-4 border border-secondary pt-3 pb-3">
+                
+                <form>
+                <paper-input label="TO userAccountNo" id="userName" required value={{toUser}} auto-validate error-message="Cannot be Empty"></paper-input>
+                <paper-input label="Amount" id="amount" required value={{amount}} auto-validate error-message="Cannot be Empty"></paper-input>
+                    <paper-button label="Submit" required raised on-click="makeTransaction">Submit</paper-input>
+                </form>
+            </iron-form>
             <iron-ajax
                 id="ajax"
                 handle-as="json"
@@ -51,31 +100,8 @@ class TradeAnalytics extends PolymerElement{
                 on-error="handleError"
                 debounce-duration="300">
             </iron-ajax>
-            <iron-form id="transactionForm" class="col-md-4 offset-md-4 border border-secondary pt-3 pb-3">
-                
-                <form>
-                    <paper-dropdown-menu label="Select Category" name="selectCategory">
-                        <paper-listbox slot="dropdown-content" selected="{{selectedCategory}}" attr-for-selected="name" selected-attribute="visible">
-                            <template is="dom-repeat" items="[[spendCategory]]">
-                                <paper-item name={{item}}>{{item}}</paper-item>
-                            </template>
-                        </paper-listbox>
-                    </paper-dropdown-menu>
-                    <paper-input label="Amount" required invalid="{{invalid}}" required error-message=[[amountValid]]  name="{{amount}}" value="{{amount}}"><div slot="prefix">$</div></paper-input>
-                    <vaadin-date-picker label="Transaction Date" placeholder="Transaction Date" value="{{selectedDate}}"></vaadin-date-picker>
-                    <paper-input label="description" required value="{{description}}"></paper-input>
-                    <label id="paymentType">Payment Type:</label>
-                    <paper-radio-group aria-labelledby="paymentType" name={{selectedType}} selected="{{selectedType}}">
-                        <template is="dom-repeat" items={{paymentType}}>
-                            <paper-radio-button name="{{item}}">{{item}}</paper-radio-button>
-                        </template>
-                    </paper-radio-group>
-                    <paper-button label="Submit" required raised on-click="makeTransaction">Submit</paper-input>
-                </form>
-            </iron-form>
-            
         `
     }
 
 }
-customElements.define("trade-analytics", TradeAnalytics);
+customElements.define("make-transaction", makeTransactions);

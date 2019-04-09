@@ -200,6 +200,7 @@ class SmallbankingApp extends PolymerElement {
             <create-account name="create-account"></create-account>
             <view-account name="view-account"></view-account>
             <make-transaction name="make-transaction"></make-transaction>
+            <bank-statement name="bank-statement"></bank-statement>
           </iron-pages>
         </div>
       </div>
