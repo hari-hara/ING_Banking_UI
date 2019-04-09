@@ -78,15 +78,18 @@ class SmallbankingApp extends PolymerElement {
   
   connectedCallback(){
 		super.connectedCallback();
-       
+      this.isNotLoggedin = true;
       this.addEventListener('loggedInuser', (e) => {
           console.log(e.detail);
           //this.isLoggedin = true;
           if(e.detail.sessionRole === "admin"){
             this.isLoggedinAdmin = true;
-            this.isLoggedin = false;
+            this.isNotLoggedin = false;
+            this.isNormaluser = false; 
           }else{
+            this.isNormaluser = true;
             this.isLoggedinAdmin = false;
+            this.isNotLoggedin = false;
           }
       });
   }
@@ -95,7 +98,11 @@ class SmallbankingApp extends PolymerElement {
     sessionStorage.clear();
     if(sessionStorage.length == 0){
       this.isLoggedin = false;
-      document.querySelector('smallbanking-app').setAttribute('route.path', '/login');
+      this.set('route.path', '/login');
+      this.isNotLoggedin = true;
+      this.isLoggedinAdmin = false;
+      this.isNormaluser = false;
+      //document.querySelector('smallbanking-app').setAttribute('route.path', '/login');
     }
   }
   static get template() {
@@ -128,14 +135,14 @@ class SmallbankingApp extends PolymerElement {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-              <template is="dom-if" if={{!isLoggedin}}>
+              <template is="dom-if" if={{isNotLoggedin}}>
                 <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
               </template>
               <template is="dom-if" if={{isLoggedinAdmin}}>
                 <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
               </template>
-              <template is="dom-if" if={{!isLoggedinAdmin}}>
+              <template is="dom-if" if={{isNormaluser}}>
                 <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
                 <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>

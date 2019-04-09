@@ -2,7 +2,7 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 
 import { sharedStyles } from './shared-styles.js';
 
-class StockSummary extends PolymerElement{
+class ViewAccount extends PolymerElement{
     constructor(){
         super();
     }
@@ -103,4 +103,4 @@ class StockSummary extends PolymerElement{
     }
 
 }
-customElements.define("stock-summary", StockSummary);
+customElements.define("view-account", ViewAccount);
