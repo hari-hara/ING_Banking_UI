@@ -12,7 +12,7 @@ class ViewAccount extends PolymerElement{
         super.ready();
         let viewAccountAjax = this.$.ajax;
         viewAccountAjax.contentType = "application/json";
-        viewAccountAjax.url = config.baseURL+"/bank/user/"+sessionValue[0]+"/summary";
+        viewAccountAjax.url = "http://10.117.189.40:8085/bank/user/"+sessionValue[0]+"/summary";
          this.requestType = 'summary';
          viewAccountAjax.generateRequest();
 
@@ -31,7 +31,7 @@ class ViewAccount extends PolymerElement{
             let buyStockajax = this.$.ajax;
             
            buyStockajax.contentType = "application/json";
-           buyStockajax.url = config.baseURL+"/rmisecurity/stmt/"+ this.selectedUser+ "/stockname";
+           buyStockajax.url = "http://10.117.189.40/rmisecurity/stmt/"+ this.selectedUser+ "/stockname";
             this.requestType = 'summary';
             buyStockajax.generateRequest();
          }
@@ -41,7 +41,7 @@ class ViewAccount extends PolymerElement{
             case 'summary':
                 console.log(event.detail.response);
                 this.responseData = event.detail.response;
-             this.isActive = false;
+                this.isActive = false;
                 console.log("details rendered", event.response);
                 //this.responseData = event.detail.__data.response;
                 break;
@@ -64,7 +64,7 @@ class ViewAccount extends PolymerElement{
     static get template(){
         return html `
             <h2>[[pageTitle]]</h2>
-			<paper-toast id="messageHandle" text="[[toastMessage]]" horizontal-align="center" vertical-align="middle"></paper-toast>
+			<!--<paper-toast id="messageHandle" text="[[toastMessage]]" horizontal-align="center" vertical-align="middle"></paper-toast>-->
             
             <paper-spinner active={{isActive}}></paper-spinner><br/>
             <iron-ajax
