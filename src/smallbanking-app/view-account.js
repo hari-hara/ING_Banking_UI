@@ -7,20 +7,22 @@ class ViewAccount extends PolymerElement{
         super();
     }
     ready(){
-        
+        sessionStorage.getItem("userData");
+        let sessionValue = JSON.parse(sessionStorage.getItem("userData"));
         super.ready();
+        let viewAccountAjax = this.$.ajax;
+        viewAccountAjax.contentType = "application/json";
+        viewAccountAjax.url = config.baseURL+"/bank/user/"+sessionValue[0]+"/summary";
+         this.requestType = 'summary';
+         viewAccountAjax.generateRequest();
 
     }
     static get properties(){
         return {
             pageTitle:{
                 type: String,
-                value: "This is Stock Summary page"
-            },
-            users:{
-                type: Array,
-                value: ["user1", "user2", "user3"]
-            },
+                value: "This is Account Summary page"
+            }
         }
     }
     getSummary(event){
@@ -37,9 +39,11 @@ class ViewAccount extends PolymerElement{
     handleResponse(event, requestType ){
         switch(this.requestType){
             case 'summary':
+                console.log(event.detail.response);
+                this.responseData = event.detail.response;
              this.isActive = false;
                 console.log("details rendered", event.response);
-                this.responseData = event.detail.__data.response;
+                //this.responseData = event.detail.__data.response;
                 break;
             case 'buyStock':
                 this.toastMessage = "This transaction is successful"
@@ -70,33 +74,28 @@ class ViewAccount extends PolymerElement{
                 on-error="handleError"
                 debounce-duration="300">
             </iron-ajax>
-            <!--<paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
-                <div class="card-content">
-                    Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
-                    <table class="table mt-5">
-                        <thead>
-                            <tr>
-                                <th>UserName</th>
-                                <th>Account No</th>
-                                <th>Total balance</th>
-                            </tr>
-                        </thead>
-                                <tbody>
-                                        <template is="dom-repeat" items=[[responseData]]  as="userResults">
-                                            <tr>
-                                                <td scope="row">{{userResults.userName}}</td>
-                                                <td>{{userResults.accountId}}</td>
-                                                <td>{{userResults.balance}}</td>
-                                            </tr>
-                                        </template>            
-                                </tbody>
-                    </table><br/>
-                </div>
-                <div class="card-actions">
-                <paper-button label="Get Statement" required raised on-click="getStatement">Get Statement</paper-input>
-                </div>
-            </paper-card>
-            -->
+            
+            <table class="table mt-5" border="1">
+                <thead>
+                    <tr>
+                        <th>userName</th>
+                        <th>Account No</th>
+                        <th>Available Balance</th>
+                    </tr>
+                </thead>
+                        <tbody id="scrollable-element" style="overflow: auto;height: 200px;">
+                       
+                       
+                                    <tr>
+                                        <td>{{responseData.userName}}</td>
+                                        <td>{{responseData.accountno}}</td>
+                                        <td>{{responseData.totalAmount}}</td>
+                                        <td><paper-button label="statement" required raised on-click="getStatement">Get Statement</paper-input></td>
+                                    </tr>
+                       
+                        </tbody>
+                    
+            </table><br/>
             
             
         `

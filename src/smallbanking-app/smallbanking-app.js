@@ -56,19 +56,35 @@ class SmallbankingApp extends PolymerElement {
     this.isActive = true;
     switch(newPage){
       case 'login':
+        
         import('./login-page.js');
         this.isActive = false;
         break;
       case 'create-account':
-        import('./create-account.js');
+        if(sessionStorage.length > 0){
+          import('./create-account.js');
+        }else{
+          import('./login-page.js');
+        }
+        
         this.isActive = false;
         break;
       case 'view-account':
-        import('./view-account.js');
+        if(sessionStorage.length > 0){
+          import('./view-account.js');
+        }else{
+          import('./login-page.js');
+        }
+        
         this.isActive = false;
         break;
       case 'make-transaction':
-        import('./make-transaction.js');
+        if(sessionStorage.length > 0){
+          import('./make-transaction.js');
+        }else{
+          import('./login-page.js');
+        }
+        
         this.isActive = false;
         break;  
       default:
@@ -77,8 +93,22 @@ class SmallbankingApp extends PolymerElement {
   }
   
   connectedCallback(){
-		super.connectedCallback();
-      this.isNotLoggedin = true;
+    super.connectedCallback();
+      if(sessionStorage.length > 0){
+        let res = JSON.parse(sessionStorage.userData);
+        if(res[1] == "admin"){
+          this.isLoggedinAdmin = true;
+            this.isNotLoggedin = false;
+            this.isNormaluser = false; 
+        }else{
+          this.isNormaluser = true;
+            this.isLoggedinAdmin = false;
+            this.isNotLoggedin = false;
+        }
+      }else{
+        this.isNotLoggedin = true;
+      }
+      
       this.addEventListener('loggedInuser', (e) => {
           console.log(e.detail);
           //this.isLoggedin = true;
