@@ -1,5 +1,5 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
-import '@polymer/paper-card/paper-card.js';
+
 import { sharedStyles } from './shared-styles.js';
 
 class StockSummary extends PolymerElement{
@@ -70,7 +70,7 @@ class StockSummary extends PolymerElement{
                 on-error="handleError"
                 debounce-duration="300">
             </iron-ajax>
-            <paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+            <!--<paper-card heading="Emmental" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
                 <div class="card-content">
                     Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
                     <table class="table mt-5">
@@ -96,7 +96,7 @@ class StockSummary extends PolymerElement{
                 <paper-button label="Get Statement" required raised on-click="getStatement">Get Statement</paper-input>
                 </div>
             </paper-card>
-
+            -->
             
             
         `

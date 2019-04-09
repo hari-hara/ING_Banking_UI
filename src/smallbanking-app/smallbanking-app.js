@@ -2,7 +2,6 @@ import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/app-route/app-location.js';
 import '@polymer/app-route/app-route.js';
 import '@polymer/iron-pages/iron-pages.js';
-import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/iron-form/iron-form.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-button/paper-button.js';
@@ -79,21 +78,16 @@ class SmallbankingApp extends PolymerElement {
   
   connectedCallback(){
 		super.connectedCallback();
-      sessionStorage.getItem("userData");
-      if(sessionStorage.length > 0){
-          this.isLoggedin = true;
-          if(sessionStorage.userRole == "Admin"){
-            this.isLoggedinAdmin = true;
-          }else{
-            this.isLoggedinUser = true;
-          }
-          
-      }else{
-        this.isLoggedin = false;
-      } 
+       
       this.addEventListener('loggedInuser', (e) => {
           console.log(e.detail);
-          this.isLoggedin = true;
+          //this.isLoggedin = true;
+          if(e.detail.sessionRole === "admin"){
+            this.isLoggedinAdmin = true;
+            this.isLoggedin = false;
+          }else{
+            this.isLoggedinAdmin = false;
+          }
       });
   }
   
@@ -134,14 +128,14 @@ class SmallbankingApp extends PolymerElement {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-              <template is="dom-if" if=[[!isLoggedin]]>
+              <template is="dom-if" if={{!isLoggedin}}>
                 <li class="nav-item"><a class="nav-link" href="#/login">Login</a></li>
               </template>
-              <template is="dom-if" if=[[isLoggedinAdmin]]>
+              <template is="dom-if" if={{isLoggedinAdmin}}>
                 <li class="nav-item"><a class="nav-link" href="#/create-account">Create Account</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>
               </template>
-              <template is="dom-if" if=[[isLoggedinUser]]>
+              <template is="dom-if" if={{!isLoggedinAdmin}}>
                 <li class="nav-item"><a class="nav-link" href="#/view-account">View Account</a></li>
                 <li class="nav-item"><a class="nav-link" href="#/make-transaction">Make Transaction</a></li>
                 <li class="nav-item"><paper-button raised on-click="clearSession">LogOut</paper-button></li>

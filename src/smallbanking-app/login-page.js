@@ -21,22 +21,30 @@ class LoginPage extends PolymerElement{
 
         if(this.$.loginform.validate()) {
             console.log("entered values are",this.userName, this.passWord);
+
             let ajaxCall = this.$.ajaxRequest;
-            ajaxCall.url = "http://localhost:3000/loginResponse";
-            //ajaxCall.body = {"userName": this.userName, "password": this.passWord};
+            ajaxCall.method = "POST";
+            ajaxCall.url = config.baseURL+"/bank/login";
+            ajaxCall.body = {"username": this.userName, "pwd": this.passWord};
             ajaxCall.generateRequest(); 
         }
     }
     handleResponse(event){
         this.data = event.detail.response;
         console.log("response data: ",this.data);
-        if(this.data.message === "Valid User"){
-            sessionStorage.setItem("userData",JSON.stringify(this.userName));
-
-            this.dispatchEvent(new CustomEvent('loggedInuser', {bubbles: true, composed: true, detail:{'sessionUser':this.userName, 'sessionRole': this.userRole}}));
+        if(this.data.message === "login successful"){
+            //sessionStorage.setItem("userData",JSON.stringify(this.userName));
+            let sessionArray = JSON.stringify([this.userName,this.data.role]);
+            sessionStorage.setItem("userData", sessionArray); 
+            this.dispatchEvent(new CustomEvent('loggedInuser', {bubbles: true, composed: true, detail:{'sessionUser':this.userName, 'sessionRole': this.data.role}}));
 
             //this.dispatchEvent(new CustomEvent('dataUpdate' , {bubbles: true, composed: true, detail: {'name':'Sabri'}}));
-            document.querySelector("smallbanking-app").set('route.path', '/view-account');
+            if(this.data.role === "admin"){
+                document.querySelector("smallbanking-app").set('route.path', '/create-account');
+            }else{
+                document.querySelector("smallbanking-app").set('route.path', '/view-account');
+            }
+            
         }
     }
     static get properties(){
@@ -54,6 +62,8 @@ class LoginPage extends PolymerElement{
     }
     
     handleError(event){
+		this.data = event.detail.response.error;
+        console.log("response data: ",this.data);
         this.$.messageHandle.toggle();
         this.toastMessage = "This API call is failed";
     }
@@ -73,9 +83,10 @@ class LoginPage extends PolymerElement{
             </section>
             <iron-ajax
                 id="ajaxRequest"
-                method="post"
+               
                 handle-as="json"
                 on-response="handleResponse"
+                on-error="handleError"
                 debounce-duration="300"
                 content-type="application/json">
             </iron-ajax>

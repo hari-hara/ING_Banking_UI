@@ -16,6 +16,7 @@ class CreateAccount extends PolymerElement{
     ready(){
         
         super.ready();
+        sessionStorage.getItem("userData");
 
     }
     static get properties(){
@@ -32,12 +33,13 @@ class CreateAccount extends PolymerElement{
             let buyStockajax = this.$.ajax;
             
            buyStockajax.contentType = "application/json";
-           buyStockajax.url = "http://10.117.189.29:8080/rmisecurity/stmt/"+ this.selectedUser+ "/stockname";
+           buyStockajax.url = "http://10.117.189.29:8089/rmisecurity/stmt/"+ this.selectedUser+ "/stockname";
             this.requestType = 'summary';
             buyStockajax.generateRequest();
          }
     }
     handleResponse(event, requestType ){
+        this.$.messageHandle.toggle();
         switch(this.requestType){
             case 'summary':
              this.isActive = false;
@@ -79,6 +81,11 @@ class CreateAccount extends PolymerElement{
                 on-error="handleError"
                 debounce-duration="300">
             </iron-ajax>
+            <paper-dialog id="dialog">
+            <h2>Dialog Title</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </paper-dialog>
             
         `
     }
